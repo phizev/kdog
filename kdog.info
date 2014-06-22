@@ -3,5 +3,4 @@ description = Total hack. Reproduces dpm() output messages in dblog messages.
 package = Development
 core = 7.x
 dependencies[] = devel
-dependencies[] = dblog
 tags[] = developer
