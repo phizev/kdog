@@ -20,7 +20,7 @@ function kdog_requirements($phase) {
       'description' => $t('The kdog module is currently enabled, it is an insecure hack. Kdog should not be enabled on sites which are either in production, or publicly accessible.'),
       'severity' => REQUIREMENT_WARNING,
     );
-  }
 
-  return $requirements;
+    return $requirements;
+  }
 }

@@ -7,6 +7,11 @@
 
 /**
  * watchdog() replacement which behaves more like dpm().
+ *
+ * @param mixed $input Any input you would usually pass as the first parameter
+ *  to dpm().
+ * @param string $name The very first portion of the logged message.
+ * @param constant $severity One of the WATCHDOG_* severity levels.
  */
 function kdog($input, $name = 'kdog debug output', $severity = WATCHDOG_DEBUG) {
   watchdog('kdog', '!input', array('!input' => "<span>$name => </span>" . kdog_css() . kprint_r($input, TRUE)), $severity);
