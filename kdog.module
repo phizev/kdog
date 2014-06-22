@@ -14,7 +14,8 @@
  * @param constant $severity One of the WATCHDOG_* severity levels.
  */
 function kdog($input, $name = 'kdog debug output', $severity = WATCHDOG_DEBUG) {
-  watchdog('kdog', '!input', array('!input' => "<span>$name => </span>" . kdog_css() . kprint_r($input, TRUE)), $severity);
+  $message = "<span>$name => </span>" . kdog_css() . kprint_r($input, TRUE);
+  watchdog('kdog', '!message', array('!message' => $message), $severity);
 }
 
 /**
@@ -43,17 +44,14 @@ function kdog_css() {
   // print?
   if ($css != '') {
 
-    // fix the urls
-    //
     // DEVEL: changed for Drupal path system.
-    $css_url = file_create_url(drupal_get_path('module', 'devel') . "/krumo/skins/{$skin}/");
+    $css_path = drupal_get_path('module', 'devel') . "/krumo/skins/{$skin}/";
+    $css_url = file_create_url($css_path);
 
     $css = preg_replace('~%url%~Uis', $css_url, $css);
     $js = join(file(KRUMO_DIR . "krumo.js"));
-    $using_skin = preg_replace('~^' . preg_quote(realpath(KRUMO_DIR) . DIRECTORY_SEPARATOR) . '~Uis', '', realpath($_));
 
     $output = <<<EOF
-    <!-- Using Krumo Skin: $using_skin -->
     <style type="text/css">
       <!--/**/
         $css
