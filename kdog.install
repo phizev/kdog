@@ -1,0 +1,26 @@
+<?php
+
+/**
+ * @file
+ * Install file for kdog module, warns the user about kdog's security risk.
+ */
+
+/**
+ * Implements hook_requirements().
+ */
+function kdog_requirements($phase) {
+  $requirements = array();
+  // Ensure translations don't break during installation.
+  $t = get_t();
+
+  if ($phase === 'runtime') {
+    $requirements['kdog'] = array(
+      'title' => $t('kdog'),
+      'value' => $t('Security risk: kdog module enabled.'),
+      'description' => $t('The kdog module is currently enabled, it is an insecure hack. Kdog should not be enabled on sites which are either in production, or publicly accessible.'),
+      'severity' => REQUIREMENT_WARNING,
+    );
+  }
+
+  return $requirements;
+}

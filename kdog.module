@@ -1,0 +1,68 @@
+<?php
+
+/**
+ * @file
+ * Main module file for kdog module.
+ */
+
+/**
+ * watchdog() replacement which behaves more like dpm().
+ */
+function kdog($input, $name = 'kdog debug output', $severity = WATCHDOG_DEBUG) {
+  watchdog('kdog', '!input', array('!input' => "<span>$name => </span>" . kdog_css() . kprint_r($input, TRUE)), $severity);
+}
+
+/**
+ * Hacked mess of krumo::_css() which returns the css and js for krumo to work.
+ */
+function kdog_css() {
+  $output = '';
+  $css = '';
+  // DEVEL: changed for Drupal variables system
+  $skin = variable_get('devel_krumo_skin', 'orange');
+
+  // custom selected skin?
+  $_ = KRUMO_DIR . "skins/{$skin}/skin.css";
+  if ($fp = @fopen($_, 'r', 1)) {
+    $css = fread($fp, filesize($_));
+    fclose($fp);
+  }
+
+  // default skin?
+  if (!$css && ($skin != 'default')) {
+    $skin = 'default';
+    $_ = KRUMO_DIR . "skins/default/skin.css";
+    $css = join('', @file($_));
+  }
+
+  // print?
+  if ($css != '') {
+
+    // fix the urls
+    //
+    // DEVEL: changed for Drupal path system.
+    $css_url = file_create_url(drupal_get_path('module', 'devel') . "/krumo/skins/{$skin}/");
+
+    $css = preg_replace('~%url%~Uis', $css_url, $css);
+    $js = join(file(KRUMO_DIR . "krumo.js"));
+    $using_skin = preg_replace('~^' . preg_quote(realpath(KRUMO_DIR) . DIRECTORY_SEPARATOR) . '~Uis', '', realpath($_));
+
+    $output = <<<EOF
+    <!-- Using Krumo Skin: $using_skin -->
+    <style type="text/css">
+      <!--/**/
+        $css
+
+      /**/-->
+    </style>
+    <script type="text/javascript">
+      <!--//
+        $js
+
+      //-->
+    </script>
+EOF;
+  }
+
+  return $output;
+}
